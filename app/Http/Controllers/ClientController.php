@@ -50,7 +50,11 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+		$input = $request->all();
+		$cliente = \CodeProject\Client::find($id);
+		$cliente->fill($input)->save();
+		
+		return $cliente;
     }
 
     /**
