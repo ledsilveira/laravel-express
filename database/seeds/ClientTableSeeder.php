@@ -13,7 +13,7 @@ class ClientTableSeeder extends Seeder
     {
         //Limpa a tabela Client
 		//cria a seeder para criar sempre 10 registro quando rodar
-		\CodeProject\Client::truncate();
-		factory(\CodeProject\Client::class, 10)->create();
+		\CodeProject\Entities\Client::truncate();
+		factory(\CodeProject\Entities\Client::class, 10)->create();
     }
 }
