@@ -14,6 +14,15 @@ class CreateProjectsTable extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('owner_id')->unsigned();
+            $table->foreign('owner_id')->references('id')->on('users');
+            $table->integer('client_id')->unsigned();
+            $table->foreign('client_id')->references('id')->on('clients');
+            $table->string('name');
+            $table->string('description');
+            $table->smallInteger('progress');
+            $table->string('status');
+            $table->dateTime('due_date');
             $table->timestamps();
         });
     }
