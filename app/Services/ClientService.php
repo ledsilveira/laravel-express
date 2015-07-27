@@ -9,7 +9,7 @@
 namespace CodeProject\Services;
 
 
-use CodeProject\ClientValidator\ClientValidator;
+use CodeProject\Validators\ClientValidator;
 use CodeProject\Repositories\ClientRepository;
 use Illuminate\Contracts\Validation\ValidationException;
 use Prettus\Validator\Exceptions\ValidatorException;
