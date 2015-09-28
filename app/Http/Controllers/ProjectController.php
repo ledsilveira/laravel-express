@@ -2,32 +2,34 @@
 
 namespace CodeProject\Http\Controllers;
 
-use CodeProject\Repositories\ClientRepository;
-use CodeProject\Services\ClientService;
+use CodeProject\Repositories\ProjectRepository;
+use CodeProject\Services\ProjectService;
 use Illuminate\Http\Request;
 
 use CodeProject\Http\Requests;
 
 /**
- * Class ClientController
+ * Class ProjectController
  * @package CodeProject\Http\Controllers
  */
-class ClientController extends Controller
+class ProjectController extends Controller
 {
+
     /**
-     * @var ClientRepository
+     * @var ProjectRepository
      */
     private $repository;
 
     /**
-     * @var ClientService
+     * @var ProjectService
      */
     private $service;
 
     /**
-     * @param ClientRepository $repository
+     * @param ProjectRepository $repository
+     * @param ProjectService $service
      */
-    public function __construct(ClientRepository $repository, ClientService $service)
+    public function __construct(ProjectRepository $repository, ProjectService $service)
     {
         $this->repository = $repository;
         $this->service = $service;
@@ -39,10 +41,20 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return $this->repository->all();
+        return $this->repository->with('client')->with('user')->all();
     }
 
-        /**
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  Request  $request
@@ -61,7 +73,18 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->find($id);
+        return $this->repository->with('client')->with('user')->find($id);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function edit($id)
+    {
+        //
     }
 
     /**
@@ -74,11 +97,6 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
         return $this->service->upddate($request->all(),$id);
-		//$input = $request->all();
-		//$cliente = $this->repository->find($id);
-		//$cliente->fill($input)->save();
-		
-		//return $cliente;
     }
 
     /**
@@ -87,7 +105,7 @@ class ClientController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id,ClientRepository $repository)
+    public function destroy($id)
     {
         $this->repository->find($id)->delete();
     }

@@ -2,36 +2,37 @@
 /**
  * Created by PhpStorm.
  * User: LED
- * Date: 23/07/2015
- * Time: 02:33
+ * Date: 27/09/2015
+ * Time: 21:55
  */
 
 namespace CodeProject\Services;
 
 
-use CodeProject\Validators\ClientValidator;
-use CodeProject\Repositories\ClientRepository;
-use Illuminate\Contracts\Validation\ValidationException;
-use Prettus\Validator\Exceptions\ValidatorException;
+use CodeProject\Repositories\ProjectRepository;
+use CodeProject\Validators\ProjectValidator;
 
-class ClientService
+/**
+ * Class ProjectService
+ * @package CodeProject\Services
+ */
+class ProjectService
 {
     /**
-     * @var ClientRepository
+     * @var ProjectRepository
      */
     protected $repository;
 
     /**
-     * @var ClientValidator
+     * @var ProjectValidator
      */
     protected $validator;
 
-
     /**
-     * @param ClientRepository $repository
-     * @param ClientValidator $validator
+     * @param ProjectRepository $repository
+     * @param ProjectValidator $validator
      */
-    public function __construct(ClientRepository $repository, ClientValidator $validator)
+    public function __construct(ProjectRepository $repository, ProjectValidator $validator)
     {
         $this->repository = $repository;
         $this->validator = $validator;
@@ -59,7 +60,6 @@ class ClientService
         //disparar notificacao
 
     }
-
 
     /**
      * @param array $data
