@@ -3,14 +3,21 @@
 namespace CodeProject\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Prettus\Repository\Contracts\Transformable;
+use Prettus\Repository\Traits\TransformableTrait;
 
-class Project extends Model
+class Project extends Model implements  Transformable
 {
+    use TransformableTrait;
     //Campos que podem ser criados por array de dados pelo create
     protected $fillable = [
+        'owner_id',
+        'client_id',
         'name',
         'description',
-        'status'
+        'progress',
+        'status',
+        'due_date'
     ];
 
     /**
@@ -18,7 +25,7 @@ class Project extends Model
      */
     public function client()
     {
-        return $this->belongsTo('CodeProject\Entities\Client','client_id');
+        return $this->belongsTo(Client::class,'client_id');
     }
 
     /**
@@ -26,6 +33,11 @@ class Project extends Model
      */
     public function user()
     {
-        return $this->belongsTo('CodeProject\Entities\User','owner_id');
+        return $this->belongsTo(User::class,'owner_id');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(ProjectNote::class);
     }
 }

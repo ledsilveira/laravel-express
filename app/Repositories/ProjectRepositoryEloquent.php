@@ -12,12 +12,18 @@ namespace CodeProject\Repositories;
 use CodeProject\Entities\Project;
 use Prettus\Repository\Eloquent\BaseRepository;
 
+/**
+ * Class ProjectRepositoryEloquent
+ * @package CodeProject\Repositories
+ */
 class ProjectRepositoryEloquent extends BaseRepository implements ProjectRepository
 {
+    /**
+     * @return mixed
+     */
     public function model()
     {
         return Project::class;
     }
-
 
 }

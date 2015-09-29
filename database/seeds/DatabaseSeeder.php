@@ -14,14 +14,13 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        //libera a nao validacao de chaves estrangeiras para os truncates
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 		//Chama seeder de client
+        $this->call(UserTableSeeder::class);
 		$this->call(ClientTableSeeder::class);
         $this->call(ProjectTableSeeder::class);
+        $this->call(ProjectNoteTableSeeder::class);
 				
         // $this->call(UserTableSeeder::class);
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Model::reguard();
     }
 }

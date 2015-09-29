@@ -11,26 +11,41 @@
 |
 */
 
+
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('ola/{nome}', 'TesteController@index' );
 
 
 //Route::get('client', function(){
 //	return \CodeProject\Client::all();
 //} );
+Route::post('oauth/access_token', function(){
+    return Response::json(Authorizer::issueAccessToken());
+});
 
-Route::get('client', 'ClientController@index' );
-Route::post('client', 'ClientController@store' );
-Route::get('client/{id}', 'ClientController@show' );
-Route::delete('client/{id}', 'ClientController@destroy' );
-Route::put('client/{id}', 'ClientController@update' );
+//middleware fica entre a request e a response, assim ele valida o logon esta ok, se sim log, se nao erro
+Route::group(['middleware'=>'oauth'], function(){
 
-Route::get('project', 'ProjectController@index' );
-Route::post('project', 'ProjectController@store' );
-Route::get('project/{id}', 'ProjectController@show' );
-Route::delete('project/{id}', 'ProjectController@destroy' );
-Route::put('project/{id}', 'ProjectController@update' );
+    route::resource('client', 'ClientController', ['except' => ['create','edit']]);
+    //O resource acima correponde a juncao de todas rotas abaixo,
+    // uso do except para evitar que crie rotas para alguns dos metodos automaticos do laravel que nao serao usados
+    //Route::get('client', 'ClientController@index' );
+    //Route::post('client', 'ClientController@store' );
+    //Route::get('client/{id}', 'ClientController@show' );
+    //Route::delete('client/{id}', 'ClientController@destroy' );
+    //Route::put('client/{id}', 'ClientController@update' );
+
+    Route::group(['prefix'=>'project'], function(){
+        route::resource('', 'ProjectController', ['except' => ['create','edit']]);
+
+        Route::get('{id}/note', 'ProjectNoteController@index' );
+        Route::post('{id}/note', 'ProjectNoteController@store' );
+        Route::get('{id}/note/{noteId}', 'ProjectNoteController@show' );
+        Route::put('{id}/note/{noteId}', 'ProjectNoteController@update' );
+        Route::delete('{id}/note/{noteId}', 'ProjectNoteController@delete' );
+    });
+
+});
+
 

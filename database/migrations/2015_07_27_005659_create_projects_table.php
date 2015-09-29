@@ -19,10 +19,10 @@ class CreateProjectsTable extends Migration
             $table->integer('client_id')->unsigned();
             $table->foreign('client_id')->references('id')->on('clients');
             $table->string('name');
-            $table->string('description');
+            $table->text('description');
             $table->smallInteger('progress');
-            $table->string('status');
-            $table->dateTime('due_date');
+            $table->smallInteger('status');
+            $table->date('due_date');
             $table->timestamps();
         });
     }
