@@ -43,7 +43,7 @@ class ClientService
      */
     public function create(array $data)
     {
-        //validacoes podem ser em outros lugares, mas ficou no serviço junto as regras de negocio
+        //validacoes podem ser em outros lugares, mas ficou no serviÃ§o junto as regras de negocio
         try {
             $this->validator->with($data)->passesOrFail();
             return $this->repository->create($data);
@@ -75,7 +75,7 @@ class ClientService
         catch(ValidatorException $e) {
             return [
                 'error' => true,
-                'message' =>$e->getMessage()
+                'message' =>$e->getMessageBag()
             ];
 
         }
