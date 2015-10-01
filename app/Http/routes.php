@@ -36,8 +36,14 @@ Route::group(['middleware'=>'oauth'], function(){
     //Route::delete('client/{id}', 'ClientController@destroy' );
     //Route::put('client/{id}', 'ClientController@update' );
 
+    //Essa rota de middleware deve estar registrada no app/Http/kernel.php
+    //exemplo de uso do middleware para checar autorização de acesso via rotas
+    //Route::group(['middleware'=>'CheckProjectOwner'], function(){
+
+    route::resource('project', 'ProjectController', ['except' => ['create','edit']]);
+
     Route::group(['prefix'=>'project'], function(){
-        route::resource('', 'ProjectController', ['except' => ['create','edit']]);
+
 
         Route::get('{id}/note', 'ProjectNoteController@index' );
         Route::post('{id}/note', 'ProjectNoteController@store' );

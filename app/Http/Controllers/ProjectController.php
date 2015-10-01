@@ -41,7 +41,8 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return $this->repository->with('client')->with('user')->all();
+        //return $this->repository->with('client')->with('user')->all();
+        return $this->repository->with('client')->with('user')->with('members')->findWhere(['owner_id' => \Authorizer::getResourceOwnerId()]);
     }
 
     /**
@@ -73,6 +74,10 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
+        if( $this->checkProjectPermissions($id) == false )
+        {
+            return ['error'=>'access forbiden'];
+        }
         return $this->repository->with('client')->with('user')->find($id);
     }
 
@@ -96,6 +101,10 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if( $this->checkProjectOwner($id) == false )
+        {
+            return ['error'=>'access forbiden'];
+        }
         return $this->service->upddate($request->all(),$id);
     }
 
@@ -107,6 +116,38 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
+        if( $this->checkProjectOwner($id) == false )
+        {
+            return ['error'=>'access forbiden'];
+        }
         $this->repository->find($id)->delete();
+    }
+
+    private function checkProjectOwner($projectId)
+    {
+        //Facade do Oauth pega o owner_id de quem está logado
+        $userId = \Authorizer::getResourceOwnerId();
+        //Usando o php artisan route:list que o parametro requeste nas chamdas de projetos
+        // é o {project}, este é o nome que deve ser pego do request
+        //$projectId = $request->project;
+        return $this->repository->isOwner($projectId, $userId);
+    }
+
+    private function checkProjectMember($projectId)
+    {
+        $userId = \Authorizer::getResourceOwnerId();
+        return $this->repository->hasMember($projectId, $userId);
+    }
+
+    private function checkProjectPermissions($projectId)
+    {
+        if( $this->checkProjectOwner($projectId) || $this->checkProjectMember($projectId))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
