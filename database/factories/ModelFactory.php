@@ -47,6 +47,14 @@ $factory->define(CodeProject\Entities\ProjectNote::class, function (Faker\Genera
     return [
         'project_id' => rand(1,10),
         'title' => $faker->word,
-        'note' => $faker->paragraph,
+        'note' => $faker->sentence(8),
+    ];
+});
+
+$factory->define(CodeProject\Entities\OauthClient::class, function (Faker\Generator $faker) {
+    return [
+        'id' => sha1($faker->word),
+        'secret' => $faker->word,
+        'name' => $faker->paragraph,
     ];
 });
