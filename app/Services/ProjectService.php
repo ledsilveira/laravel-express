@@ -12,6 +12,9 @@ namespace CodeProject\Services;
 use CodeProject\Repositories\ProjectRepository;
 use CodeProject\Validators\ProjectValidator;
 
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Filesystem\Factory as Storage;
+
 /**
  * Class ProjectService
  * @package CodeProject\Services
@@ -29,13 +32,25 @@ class ProjectService
     protected $validator;
 
     /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
+     * @var Storage
+     */
+    protected $storage;
+
+    /**
      * @param ProjectRepository $repository
      * @param ProjectValidator $validator
      */
-    public function __construct(ProjectRepository $repository, ProjectValidator $validator)
+    public function __construct(ProjectRepository $repository, ProjectValidator $validator, Filesystem $filesystem, Storage $storage)
     {
         $this->repository = $repository;
         $this->validator = $validator;
+        $this->filesystem = $filesystem;
+        $this->storage = $storage;
     }
 
     /**
@@ -79,5 +94,14 @@ class ProjectService
             ];
 
         }
+    }
+
+    public function createFile(array $data)
+    {
+        //skip no presenter para nao usar a entidade alterada pelo presenter
+        $project = $this->repository->skipPresenter()->find($data['project_id']);
+        $projectFile = $project->files()->create($data);
+
+        $this->storage->put($projectFile->id."-".$data['name'].".".$data['extension'], $this->filesystem->get($data['file']));
     }
 }
