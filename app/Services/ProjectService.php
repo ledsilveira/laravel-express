@@ -14,6 +14,7 @@ use CodeProject\Validators\ProjectValidator;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Prettus\Validator\Exceptions\ValidatorException;
 
 /**
  * Class ProjectService
