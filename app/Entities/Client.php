@@ -15,4 +15,17 @@ class Client extends Model
 		'address',
 		'obs'
 	];
+
+	public function project()
+	{
+		return $this->hasMany(Project::class);
+	}
+	public function projectNotes()
+	{
+		return $this->hasManyThrough(ProjectNote::class,Project::class);
+	}
+	public function projectMembers()
+	{
+		return $this->hasManyThrough(ProjectMember::class,Project::class);
+	}
 }

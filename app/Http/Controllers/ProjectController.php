@@ -7,6 +7,7 @@ use CodeProject\Services\ProjectService;
 use Illuminate\Http\Request;
 
 use CodeProject\Http\Requests;
+use Mockery\CountValidator\Exception;
 
 /**
  * Class ProjectController
@@ -41,8 +42,8 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        //return $this->repository->with('client')->with('user')->all();
-        return $this->repository->with('client')->with('user')->with('members')->findWhere(['owner_id' => \Authorizer::getResourceOwnerId()]);
+        return $this->repository->with('client')->with('user')->all();
+        //return $this->repository->with('client')->with('user')->with('members')->findWhere(['owner_id' => \Authorizer::getResourceOwnerId()]);
     }
 
     /**
@@ -74,11 +75,11 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        if( $this->checkProjectPermissions($id) == false )
+      /*  if( $this->checkProjectPermissions($id) == false )
         {
             return ['error'=>'access forbiden'];
-        }
-        return $this->repository->with('client')->with('user')->find($id);
+        }*/
+        return $this->service->find($id);
     }
 
     /**
@@ -101,10 +102,11 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if( $this->checkProjectOwner($id) == false )
+       /* if( $this->checkProjectOwner($id) == false )
         {
             return ['error'=>'access forbiden'];
         }
+       */
         return $this->service->upddate($request->all(),$id);
     }
 
@@ -116,11 +118,12 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        if( $this->checkProjectOwner($id) == false )
+      /*  if( $this->checkProjectOwner($id) == false )
         {
             return ['error'=>'access forbiden'];
         }
-        $this->repository->find($id)->delete();
+      */
+        return $this->service->delete($id);
     }
 
     private function checkProjectOwner($projectId)

@@ -11,7 +11,9 @@ namespace CodeProject\Services;
 
 use CodeProject\Validators\ClientValidator;
 use CodeProject\Repositories\ClientRepository;
-use Illuminate\Contracts\Validation\ValidationException;
+
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class ClientService
@@ -54,6 +56,17 @@ class ClientService
                 'message' =>$e->getMessageBag()
             ];
 
+        } catch (ModelNotFoundException $e) {
+            return [
+                'error' => true,
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to load data. Data not load!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
+            ];
         }
         //enviar email
         //disparar notificacao
@@ -66,7 +79,7 @@ class ClientService
      * @param $id
      * @return array|mixed
      */
-    public function upddate(array $data, $id)
+    public function update(array $data, $id)
     {
         try {
             $this->validator->with($data)->passesOrFail();
@@ -77,7 +90,73 @@ class ClientService
                 'error' => true,
                 'message' =>$e->getMessageBag()
             ];
+        }
+        catch (ModelNotFoundException $e) {
+            return [
+                'error' => true,
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to update data. Data not updated!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
+            ];
+        }
+    }
 
+    public function find($id)
+    {
+        try{
+            return $this->repository->with('project')->with('projectNotes')->find($id);
+        } catch (ModelNotFoundException $e) {
+            return [
+                'error' => true,
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to load data. Data not load!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
+            ];
+        }
+    }
+    public function delete($id)
+    {
+        try{
+            $client = $this->repository->find($id);
+
+            $client->projectNotes()->forceDelete();
+            $client->projectMembers()->forceDelete();
+            $client->project()->forceDelete();
+
+            if( $client->delete() )
+            {
+                return [
+                    'message' =>"Client: {$id} has been removed."
+                ];
+            }
+            else
+            {
+                return [
+                    'error' => true,
+                    'message' =>'Error to remove Project.'
+                ];
+            }
+            return $this->repository->find($id)->delete();
+        } catch (ModelNotFoundException $e) {
+            return [
+                'error' => true,
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            dd($e);
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to remove data. Data not removed!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
+            ];
         }
     }
 }
