@@ -73,7 +73,7 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->service->upddate($request->all(),$id);
+        return $this->service->update($request->all(),$id);
 		//$input = $request->all();
 		//$cliente = $this->repository->find($id);
 		//$cliente->fill($input)->save();

@@ -107,7 +107,7 @@ class ProjectController extends Controller
             return ['error'=>'access forbiden'];
         }
        */
-        return $this->service->upddate($request->all(),$id);
+        return $this->service->update($request->all(),$id);
     }
 
     /**
