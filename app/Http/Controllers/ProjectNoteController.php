@@ -96,7 +96,7 @@ class ProjectNoteController extends Controller
      */
     public function update(Request $request, $id, $noteId)
     {
-        return $this->service->upddate($request->all(),$noteId);
+        return $this->service->update($request->all(),$noteId);
     }
 
 

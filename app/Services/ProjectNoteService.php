@@ -66,7 +66,7 @@ class ProjectNoteService
      * @param $id
      * @return array|mixed
      */
-    public function upddate(array $data, $id)
+    public function update(array $data, $id)
     {
         try {
             $this->validator->with($data)->passesOrFail();
