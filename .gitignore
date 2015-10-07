@@ -2,3 +2,7 @@
 /node_modules
 Homestead.yaml
 .env
+resources/bower_components
+*.idea/
+
+.idea/workspace.xml
