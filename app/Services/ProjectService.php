@@ -9,6 +9,8 @@
 namespace CodeProject\Services;
 
 
+use CodeProject\Entities\ProjectMember;
+use CodeProject\Entities\User;
 use CodeProject\Repositories\ProjectRepository;
 use CodeProject\Validators\ProjectValidator;
 
@@ -107,6 +109,10 @@ class ProjectService
         }
     }
 
+    /**
+     * @param $id
+     * @return array|mixed
+     */
     public function find($id)
     {
         try{
@@ -124,6 +130,11 @@ class ProjectService
             ];
         }
     }
+
+    /**
+     * @param $id
+     * @return array
+     */
     public function delete($id)
     {
         try{
@@ -154,6 +165,91 @@ class ProjectService
             return [
                 'error' => true,
                 'message' => $errorMsg
+            ];
+        }
+    }
+
+    /**
+     * Adiciona membro a um determinado projeto
+     *
+     * @param $id
+     * @param $member_id
+     */
+    public function addMember($id, $member_id)
+    {
+        //verifica se membro estah no projeto
+        if( $this->repository->hasMember($id, $member_id) )
+        {
+            return [
+                'error' => true,
+                'message' =>'member is already part of the project.'
+            ];
+        }
+        //verifica se user existe
+        //caso nao adiciona o membro else erro
+        $user = User::find($member_id);
+        if( $user )
+        {
+            ProjectMember::create(['project_id'=>$id, 'member_id'=>$user->id]);
+            return [
+                'error' => false,
+                'message' =>'User add to project.'
+            ];
+        }
+        else
+        {
+            return [
+                'error' => true,
+                'message' =>'User not exists.'
+            ];
+        }
+    }
+
+    /**
+     *
+     * Remove membro de um determinado projeto
+     *
+     * @param $id
+     * @param $member_id
+     */
+    public function removeMember($id, $member_id)
+    {
+        //verifica se membro estah no projeto
+        if( $this->repository->hasMember($id, $member_id) )
+        {
+            //Apagar membro
+            //ProjectMember::destroy();
+        }
+        else
+        {
+            return [
+                'error' => true,
+                'message' =>'this member is not in project.'
+            ];
+        }
+    }
+
+    /**
+     * Verifica se membro faz parte de determinado projeto
+     *
+     * @param $id
+     * @param $member_id
+     */
+    public function isMember($id, $member_id)
+    {
+        //verifica se membro esta assiciado ao projeto
+        if( $this->repository->hasMember($id, $member_id) )
+        {
+            return [
+                'error' => false,
+                'message' =>'is member.'
+            ];
+        }
+        else
+        {
+            return [
+                'error' => true,
+                'message' =>'not member.'
             ];
         }
     }

@@ -153,4 +153,19 @@ class ProjectController extends Controller
             return false;
         }
     }
+
+    public function addMember($projectId,$memberId)
+    {
+        return $this->service->addMember($projectId,$memberId);
+    }
+
+    public function removeMember($projectId,$memberId)
+    {
+        return $this->service->removeMember($projectId,$memberId);
+    }
+
+    public function isMember($projectId,$memberId)
+    {
+        return $this->service->isMember($projectId,$memberId);
+    }
 }

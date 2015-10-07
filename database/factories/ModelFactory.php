@@ -58,3 +58,20 @@ $factory->define(CodeProject\Entities\OauthClient::class, function (Faker\Genera
         'name' => $faker->paragraph,
     ];
 });
+
+$factory->define(CodeProject\Entities\ProjectTask::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->word,
+        'project_id' => rand(1,10),
+        'start_date' => $faker->dateTime('now'),
+        'due_date' => $faker->dateTime('now'),
+        'status' => rand(1,10),
+    ];
+});
+
+$factory->define(CodeProject\Entities\ProjectMember::class, function (Faker\Generator $faker) {
+    return [
+        'project_id' => rand(1,10),
+        'member_id' => rand(1,10),
+    ];
+});
