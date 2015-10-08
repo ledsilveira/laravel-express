@@ -59,4 +59,22 @@ class Project extends Model implements  Transformable
     {
         return $this->hasMany(ProjectFile::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasks()
+    {
+        return $this->hasMany(ProjectTask::class);
+    }
+
+    public function membersRelation()
+    {
+        return $this->hasMany(ProjectMember::class);
+    }
+
+    public function usersRelation()
+    {
+        return $this->hasMany(User::class);
+    }
 }

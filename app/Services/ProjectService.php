@@ -152,9 +152,13 @@ class ProjectService
     public function delete($id)
     {
         try{
-            $project = $this->repository->find($id);
+            $project = $this->repository->skipPresenter()->find($id);
             $project->members()->forceDelete();
             $project->notes()->forceDelete();
+            $project->tasks()->forceDelete();
+            //@todo apagar arquivos do servidor
+            $project->files()->forceDelete();
+
             if( $project->delete() )
             {
                 return [
@@ -168,7 +172,6 @@ class ProjectService
                     'message' =>'Error to remove Project.'
                 ];
             }
-            return $this->repository->find($id)->delete();
         } catch (ModelNotFoundException $e) {
             return [
                 'error' => true,
@@ -191,30 +194,49 @@ class ProjectService
      */
     public function addMember($id, $member_id)
     {
-        //verifica se membro estah no projeto
-        if( $this->repository->hasMember($id, $member_id) )
+        try
         {
+            //carrega projeto
+            $project = $this->repository->skipPresenter()->find($id);
+            //verifica se membro estah no projeto
+            if( $this->repository->hasMember($id, $member_id) )
+            {
+                return [
+                    'error' => true,
+                    'message' =>'member is already part of the project.'
+                ];
+            }
+            //verifica se user existe
+            //caso nao adiciona o membro else erro
+            //@todo trocar por usersRelation e chamar conforme o membersRelation
+            $user = User::find($member_id);
+
+            if( $user )
+            {
+                $project->membersRelation()->create(['project_id'=>$id, 'member_id'=>$member_id]);
+                return [
+                    'error' => false,
+                    'message' =>'User add to project.'
+                ];
+            }
+            else
+            {
+                return [
+                    'error' => true,
+                    'message' =>'User not exists.'
+                ];
+            }
+        } catch (ModelNotFoundException $e) {
             return [
                 'error' => true,
-                'message' =>'member is already part of the project.'
+                'message' =>'Not Found.'
             ];
-        }
-        //verifica se user existe
-        //caso nao adiciona o membro else erro
-        $user = User::find($member_id);
-        if( $user )
-        {
-            ProjectMember::create(['project_id'=>$id, 'member_id'=>$user->id]);
-            return [
-                'error' => false,
-                'message' =>'User add to project.'
-            ];
-        }
-        else
-        {
+        } catch (QueryException $e) {
+            dd($e);
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to add member!';
             return [
                 'error' => true,
-                'message' =>'User not exists.'
+                'message' => $errorMsg
             ];
         }
     }
@@ -228,17 +250,50 @@ class ProjectService
      */
     public function removeMember($id, $member_id)
     {
-        //verifica se membro estah no projeto
-        if( $this->repository->hasMember($id, $member_id) )
+        try
         {
-            //Apagar membro
-            //ProjectMember::destroy();
-        }
-        else
-        {
+            //carrega projeto
+            $project = $this->repository->skipPresenter()->find($id);
+
+            //verifica se membro estah no projeto
+            if( $this->repository->hasMember($id, $member_id) )
+            {
+                //Apagar membro
+                if($project->members()->detach($member_id))
+                {
+                    return [
+                        'error' => false,
+                        'message' =>'Member removed.'
+                    ];
+                }
+                else
+                {
+                    return [
+                        'error' => true,
+                        'message' =>'Error ro remove member.'
+                    ];
+                }
+            }
+            else
+            {
+                return [
+                    'error' => true,
+                    'message' =>'this member is not in project.'
+                ];
+            }
+
+
+        } catch (ModelNotFoundException $e) {
             return [
                 'error' => true,
-                'message' =>'this member is not in project.'
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            dd($e);
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to remove member!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
             ];
         }
     }

@@ -152,8 +152,9 @@ class ProjectController extends Controller
         }
     }
 
-    public function addMember($projectId,$memberId)
+    public function addMember(Request $request,$projectId)
     {
+        $memberId = $request->member_id;
         return $this->service->addMember($projectId,$memberId);
     }
 
@@ -165,5 +166,10 @@ class ProjectController extends Controller
     public function isMember($projectId,$memberId)
     {
         return $this->service->isMember($projectId,$memberId);
+    }
+
+    public function members($projectId)
+    {
+        //@todo implementar, pegar a lista de membros para este projeto
     }
 }

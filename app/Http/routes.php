@@ -44,6 +44,7 @@ Route::group(['middleware'=>'oauth'], function(){
 
     Route::group(['prefix'=>'project'], function(){
 
+        Route::get('{id}/members', 'ProjectController@members' );
 
         Route::get('{id}/note', 'ProjectNoteController@index' );
         Route::post('{id}/note', 'ProjectNoteController@store' );
@@ -60,8 +61,8 @@ Route::group(['middleware'=>'oauth'], function(){
         Route::put('{id}/task/{taskId}', 'ProjectTaskController@update' );
         Route::delete('{id}/task/{taskId}', 'ProjectTaskController@delete' );
 
-        Route::get('{id}/addMember/{memberId}', 'ProjectController@addMember' );
-        Route::get('{id}/removeMember/{memberId}', 'ProjectController@removeMember' );
+        Route::post('{id}/addMember', 'ProjectController@addMember' );
+        Route::delete('{id}/removeMember/{memberId}', 'ProjectController@removeMember' );
         Route::get('{id}/isMember/{memberId}', 'ProjectController@isMember' );
     });
 
