@@ -2,34 +2,34 @@
 
 namespace CodeProject\Http\Controllers;
 
-use CodeProject\Repositories\ProjectNoteRepository;
-use CodeProject\Services\ProjectNoteService;
+use CodeProject\Repositories\ProjectTaskRepository;
+use CodeProject\Services\ProjectTaskService;
 use Illuminate\Http\Request;
 
 use CodeProject\Http\Requests;
 
 /**
- * Class ProjectNoteController
+ * Class ProjectTaskController
  * @package CodeProject\Http\Controllers
  */
-class ProjectNoteController extends Controller
+class ProjectTaskController extends Controller
 {
 
     /**
-     * @var ProjectNoteRepository
+     * @var ProjectTaskRepository
      */
     private $repository;
 
     /**
-     * @var ProjectNoteService
+     * @var ProjectTaskService
      */
     private $service;
 
     /**
-     * @param ProjectNoteRepository $repository
-     * @param ProjectNoteService $service
+     * @param ProjectTaskRepository $repository
+     * @param ProjectTaskService $service
      */
-    public function __construct(ProjectNoteRepository $repository, ProjectNoteService $service)
+    public function __construct(ProjectTaskRepository $repository, ProjectTaskService $service)
     {
         $this->repository = $repository;
         $this->service = $service;
@@ -68,12 +68,12 @@ class ProjectNoteController extends Controller
 
     /**
      * @param $id
-     * @param $noteId
+     * @param $TaskId
      * @return mixed
      */
-    public function show($id, $noteId)
+    public function show($id, $TaskId)
     {
-        return $this->repository->findWhere(['project_id'=>$id, 'id'=>$noteId]);
+        return $this->repository->findWhere(['project_id'=>$id, 'id'=>$TaskId]);
     }
 
     /**
@@ -91,21 +91,21 @@ class ProjectNoteController extends Controller
     /**
      * @param Request $request
      * @param $id
-     * @param $noteId
+     * @param $TaskId
      * @return array|mixed
      */
-    public function update(Request $request, $id, $noteId)
+    public function update(Request $request, $id, $TaskId)
     {
-        return $this->service->update($request->all(),$noteId);
+        return $this->service->update($request->all(),$TaskId);
     }
 
 
     /**
      * @param $id
-     * @param $noteId
+     * @param $TaskId
      */
-    public function destroy($id, $noteId)
+    public function destroy($id, $TaskId)
     {
-        $this->repository->delete($noteId);
+        $this->repository->delete($TaskId);
     }
 }

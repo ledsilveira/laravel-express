@@ -7,6 +7,7 @@ use CodeProject\Services\ProjectService;
 use Illuminate\Http\Request;
 
 use CodeProject\Http\Requests;
+use Mockery\CountValidator\Exception;
 
 /**
  * Class ProjectController
@@ -78,7 +79,7 @@ class ProjectController extends Controller
         {
             return ['error'=>'access forbiden'];
         }
-        return $this->repository->with('client')->with('user')->find($id);
+        return $this->service->find($id);
     }
 
     /**
@@ -105,7 +106,7 @@ class ProjectController extends Controller
         {
             return ['error'=>'access forbiden'];
         }
-        return $this->service->upddate($request->all(),$id);
+        return $this->service->update($request->all(),$id);
     }
 
     /**
@@ -120,7 +121,7 @@ class ProjectController extends Controller
         {
             return ['error'=>'access forbiden'];
         }
-        $this->repository->find($id)->delete();
+        return $this->service->delete($id);
     }
 
     private function checkProjectOwner($projectId)
@@ -149,5 +150,20 @@ class ProjectController extends Controller
         {
             return false;
         }
+    }
+
+    public function addMember($projectId,$memberId)
+    {
+        return $this->service->addMember($projectId,$memberId);
+    }
+
+    public function removeMember($projectId,$memberId)
+    {
+        return $this->service->removeMember($projectId,$memberId);
+    }
+
+    public function isMember($projectId,$memberId)
+    {
+        return $this->service->isMember($projectId,$memberId);
     }
 }

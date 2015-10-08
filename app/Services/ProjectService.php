@@ -9,11 +9,16 @@
 namespace CodeProject\Services;
 
 
+use CodeProject\Entities\ProjectMember;
+use CodeProject\Entities\User;
 use CodeProject\Repositories\ProjectRepository;
 use CodeProject\Validators\ProjectValidator;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Filesystem\Factory as Storage;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use Prettus\Validator\Exceptions\ValidatorException;
 
 /**
  * Class ProjectService
@@ -70,6 +75,17 @@ class ProjectService
                 'message' =>$e->getMessageBag()
             ];
 
+        } catch (ModelNotFoundException $e) {
+            return [
+                'error' => true,
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to save data. Data not save!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
+            ];
         }
         //enviar email
         //disparar notificacao
@@ -81,7 +97,7 @@ class ProjectService
      * @param $id
      * @return array|mixed
      */
-    public function upddate(array $data, $id)
+    public function update(array $data, $id)
     {
         try {
             $this->validator->with($data)->passesOrFail();
@@ -93,6 +109,162 @@ class ProjectService
                 'message' =>$e->getMessageBag()
             ];
 
+        } catch (ModelNotFoundException $e) {
+            return [
+                'error' => true,
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to update data. Data not updated!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
+            ];
+        }
+    }
+
+    /**
+     * @param $id
+     * @return array|mixed
+     */
+    public function find($id)
+    {
+        try{
+            return $this->repository->with('client')->with('user')->find($id);
+        } catch (ModelNotFoundException $e) {
+            return [
+                'error' => true,
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to load data. Data not load!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
+            ];
+        }
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function delete($id)
+    {
+        try{
+            $project = $this->repository->find($id);
+            $project->members()->forceDelete();
+            $project->notes()->forceDelete();
+            if( $project->delete() )
+            {
+                return [
+                    'message' =>"Project: {$id} has been removed."
+                ];
+            }
+            else
+            {
+                return [
+                    'error' => true,
+                    'message' =>'Error to remove Project.'
+                ];
+            }
+            return $this->repository->find($id)->delete();
+        } catch (ModelNotFoundException $e) {
+            return [
+                'error' => true,
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to remove data. Data not removed!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
+            ];
+        }
+    }
+
+    /**
+     * Adiciona membro a um determinado projeto
+     *
+     * @param $id
+     * @param $member_id
+     */
+    public function addMember($id, $member_id)
+    {
+        //verifica se membro estah no projeto
+        if( $this->repository->hasMember($id, $member_id) )
+        {
+            return [
+                'error' => true,
+                'message' =>'member is already part of the project.'
+            ];
+        }
+        //verifica se user existe
+        //caso nao adiciona o membro else erro
+        $user = User::find($member_id);
+        if( $user )
+        {
+            ProjectMember::create(['project_id'=>$id, 'member_id'=>$user->id]);
+            return [
+                'error' => false,
+                'message' =>'User add to project.'
+            ];
+        }
+        else
+        {
+            return [
+                'error' => true,
+                'message' =>'User not exists.'
+            ];
+        }
+    }
+
+    /**
+     *
+     * Remove membro de um determinado projeto
+     *
+     * @param $id
+     * @param $member_id
+     */
+    public function removeMember($id, $member_id)
+    {
+        //verifica se membro estah no projeto
+        if( $this->repository->hasMember($id, $member_id) )
+        {
+            //Apagar membro
+            //ProjectMember::destroy();
+        }
+        else
+        {
+            return [
+                'error' => true,
+                'message' =>'this member is not in project.'
+            ];
+        }
+    }
+
+    /**
+     * Verifica se membro faz parte de determinado projeto
+     *
+     * @param $id
+     * @param $member_id
+     */
+    public function isMember($id, $member_id)
+    {
+        //verifica se membro esta assiciado ao projeto
+        if( $this->repository->hasMember($id, $member_id) )
+        {
+            return [
+                'error' => false,
+                'message' =>'is member.'
+            ];
+        }
+        else
+        {
+            return [
+                'error' => true,
+                'message' =>'not member.'
+            ];
         }
     }
 

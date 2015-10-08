@@ -53,6 +53,16 @@ Route::group(['middleware'=>'oauth'], function(){
 
         //rota aquivos
         Route::post('{id}/file','ProjectFileController@store');
+
+        Route::get('{id}/task', 'ProjectTaskController@index' );
+        Route::post('{id}/task', 'ProjectTaskController@store' );
+        Route::get('{id}/task/{taskId}', 'ProjectTaskController@show' );
+        Route::put('{id}/task/{taskId}', 'ProjectTaskController@update' );
+        Route::delete('{id}/task/{taskId}', 'ProjectTaskController@delete' );
+
+        Route::get('{id}/addMember/{memberId}', 'ProjectController@addMember' );
+        Route::get('{id}/removeMember/{memberId}', 'ProjectController@removeMember' );
+        Route::get('{id}/isMember/{memberId}', 'ProjectController@isMember' );
     });
 
 });
