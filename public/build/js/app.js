@@ -45,6 +45,22 @@ app.config([
         .when('/clients/:id/remove',{
             templateUrl:'build/views/client/remove.html',
             controller:'ClientRemoveController'
+        })
+        .when('/project/:project_id/notes',{
+            templateUrl:'build/views/projectNote/list.html',
+            controller:'ProjectNoteCrudController'
+        })
+        .when('/project/:project_id/notes/new',{
+            templateUrl:'build/views/projectNote/new.html',
+            controller:'ProjectNoteNewController'
+        })
+        .when('/project/:project_id/notes/:idnote/edit',{
+            templateUrl:'build/views/projectNote/edit.html',
+            controller:'ProjectNoteEditController'
+        })
+        .when('/project/:project_id/notes/:idnote/remove',{
+            templateUrl:'build/views/projectNote/remove.html',
+            controller:'ProjectNoteRemoveController'
         });
     OAuthProvider.configure({
         baseUrl: appConfigProvider.config.baseUrl,

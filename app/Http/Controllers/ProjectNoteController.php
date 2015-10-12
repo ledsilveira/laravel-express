@@ -73,7 +73,7 @@ class ProjectNoteController extends Controller
      */
     public function show($id, $noteId)
     {
-        return $this->repository->findWhere(['project_id'=>$id, 'id'=>$noteId]);
+        return $this->service->find($id, $noteId);
     }
 
     /**

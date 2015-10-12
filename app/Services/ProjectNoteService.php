@@ -11,6 +11,7 @@ namespace CodeProject\Services;
 
 use CodeProject\Repositories\ProjectNoteRepository;
 use CodeProject\Validators\ProjectNoteValidator;
+use Prettus\Validator\Exceptions\ValidatorException;
 
 /**
  * Class ProjectNoteService
@@ -78,6 +79,23 @@ class ProjectNoteService
                 'message' =>$e->getMessageBag()
             ];
 
+        }
+    }
+    public function find($id, $noteId)
+    {
+        try{
+            return $this->repository->find($noteId);
+        } catch (ModelNotFoundException $e) {
+            return [
+                'error' => true,
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to load data. Data not load!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
+            ];
         }
     }
 }
