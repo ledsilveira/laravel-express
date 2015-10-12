@@ -38,6 +38,10 @@ app.config([
             templateUrl:'build/views/client/new.html',
             controller:'ClientNewController'
         })
+        .when('/clients/:id',{
+            templateUrl:'build/views/client/listone.html',
+            controller:'ClientEditController'
+        })
         .when('/clients/:id/edit',{
             templateUrl:'build/views/client/edit.html',
             controller:'ClientEditController'
@@ -49,6 +53,10 @@ app.config([
         .when('/project/:project_id/notes',{
             templateUrl:'build/views/projectNote/list.html',
             controller:'ProjectNoteCrudController'
+        })
+        .when('/project/:project_id/notes/:idnote',{
+            templateUrl:'build/views/projectNote/listone.html',
+            controller:'ProjectNoteEditController'
         })
         .when('/project/:project_id/notes/new',{
             templateUrl:'build/views/projectNote/new.html',
