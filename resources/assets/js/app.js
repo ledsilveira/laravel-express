@@ -19,9 +19,28 @@ app.provider('appConfig',function(){
  * Dentro do config soh pode receber rotas, aqui serao definidas as rotas
  */
 app.config([
-    '$routeProvider','OAuthProvider','OAuthTokenProvider','appConfigProvider',
-    function($routeProvider,OAuthProvider,OAuthTokenProvider,appConfigProvider){
-    $routeProvider
+    '$routeProvider','$httpProvider','OAuthProvider','OAuthTokenProvider',
+    'appConfigProvider',
+    function($routeProvider,$httpProvider,OAuthProvider,OAuthTokenProvider,appConfigProvider){
+        //sobrescrevendo o que exist no resource (transformer dos dados)
+        //somente quando for retorno em json e com o objeto data
+        $httpProvider.defaults.transformResponse = function(data,headers) {
+            //pega o conteudo que esta em data e retorna
+            //verifica se o header é json
+            var headresGetter = headers();
+            if(headresGetter['content-type'] == 'application/json' ||
+                headresGetter['content-type'] == 'text/json')
+            {
+                var dataJson = JSON.parse(data);
+                //verifica se veio propriedade data
+                if( dataJson.hasOwnProperty('data')){
+                    dataJson = dataJson.data;
+                }
+                return dataJson;
+            }
+            return data;
+        };
+        $routeProvider
         .when('/login',{
             templateUrl:'build/views/login.html',
             controller:'LoginController'
@@ -34,40 +53,40 @@ app.config([
             templateUrl:'build/views/client/list.html',
             controller:'ClientListController'
         })
-        .when('/clients/new',{
+        .when('/client/new',{
             templateUrl:'build/views/client/new.html',
             controller:'ClientNewController'
         })
-        .when('/clients/:id',{
+        .when('/client/:id/show',{
             templateUrl:'build/views/client/listone.html',
             controller:'ClientEditController'
         })
-        .when('/clients/:id/edit',{
+        .when('/client/:id/edit',{
             templateUrl:'build/views/client/edit.html',
             controller:'ClientEditController'
         })
-        .when('/clients/:id/remove',{
+        .when('/client/:id/remove',{
             templateUrl:'build/views/client/remove.html',
             controller:'ClientRemoveController'
         })
         .when('/project/:project_id/notes',{
-            templateUrl:'build/views/projectNote/list.html',
+            templateUrl:'build/views/project-note/list.html',
             controller:'ProjectNoteCrudController'
         })
-        .when('/project/:project_id/notes/:idnote',{
-            templateUrl:'build/views/projectNote/listone.html',
+        .when('/project/:project_id/notes/:idnote/show',{
+            templateUrl:'build/views/project-note/listone.html',
             controller:'ProjectNoteEditController'
         })
         .when('/project/:project_id/notes/new',{
-            templateUrl:'build/views/projectNote/new.html',
+            templateUrl:'build/views/project-note/new.html',
             controller:'ProjectNoteNewController'
         })
         .when('/project/:project_id/notes/:idnote/edit',{
-            templateUrl:'build/views/projectNote/edit.html',
+            templateUrl:'build/views/project-note/edit.html',
             controller:'ProjectNoteEditController'
         })
         .when('/project/:project_id/notes/:idnote/remove',{
-            templateUrl:'build/views/projectNote/remove.html',
+            templateUrl:'build/views/project-note/remove.html',
             controller:'ProjectNoteRemoveController'
         });
     OAuthProvider.configure({

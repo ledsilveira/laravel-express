@@ -125,7 +125,7 @@ class ClientService
     public function delete($id)
     {
         try{
-            $client = $this->repository->find($id);
+            $client = $this->repository->skipPresenter()->find($id);
 
             $client->projectNotes()->forceDelete();
             $client->projectMembers()->forceDelete();
@@ -144,7 +144,6 @@ class ClientService
                     'message' =>'Error to remove Project.'
                 ];
             }
-            return $this->repository->find($id)->delete();
         } catch (ModelNotFoundException $e) {
             return [
                 'error' => true,

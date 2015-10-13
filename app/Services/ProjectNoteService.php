@@ -81,7 +81,7 @@ class ProjectNoteService
 
         }
     }
-    public function find($id, $noteId)
+    public function find($noteId)
     {
         try{
             return $this->repository->find($noteId);

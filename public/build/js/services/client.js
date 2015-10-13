@@ -4,5 +4,6 @@ angular.module('app.services')
             update: {
                 method: 'PUT'
             }
+
         });
     }])

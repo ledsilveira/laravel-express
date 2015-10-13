@@ -71,9 +71,9 @@ class ProjectNoteController extends Controller
      * @param $noteId
      * @return mixed
      */
-    public function show($id, $noteId)
+    public function show($id,$noteId)
     {
-        return $this->service->find($id, $noteId);
+        return $this->service->find($noteId);
     }
 
     /**
@@ -104,7 +104,7 @@ class ProjectNoteController extends Controller
      * @param $id
      * @param $noteId
      */
-    public function destroy($id, $noteId)
+    public function destroy($id,$noteId)
     {
         $this->repository->delete($noteId);
     }

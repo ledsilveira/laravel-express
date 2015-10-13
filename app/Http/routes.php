@@ -66,6 +66,8 @@ Route::group(['middleware'=>'oauth'], function(){
         Route::get('{id}/isMember/{memberId}', 'ProjectController@isMember' );
     });
 
+    Route::get('user/authenticated', 'UserController@authenticated' );
+
 });
 
 
