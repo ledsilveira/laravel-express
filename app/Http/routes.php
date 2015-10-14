@@ -54,6 +54,7 @@ Route::group(['middleware'=>'oauth'], function(){
 
         //rota aquivos
         Route::post('{id}/file','ProjectFileController@store');
+        Route::delete('{id}/file/{idFile}','ProjectFileController@destroy');
 
         Route::get('{id}/task', 'ProjectTaskController@index' );
         Route::post('{id}/task', 'ProjectTaskController@store' );

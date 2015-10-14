@@ -18,6 +18,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Filesystem\Factory as Storage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Mockery\CountValidator\Exception;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 /**
@@ -325,10 +326,59 @@ class ProjectService
 
     public function createFile(array $data)
     {
-        //skip no presenter para nao usar a entidade alterada pelo presenter
-        $project = $this->repository->skipPresenter()->find($data['project_id']);
-        $projectFile = $project->files()->create($data);
+        try{
 
-        $this->storage->put($projectFile->id."-".$data['name'].".".$data['extension'], $this->filesystem->get($data['file']));
+
+            //skip no presenter para nao usar a entidade alterada pelo presenter
+            $project = $this->repository->skipPresenter()->find($data['project_id']);
+            $projectFile = $project->files()->create($data);
+
+            $this->storage->put($projectFile->id."-".$data['name'].".".$data['extension'], $this->filesystem->get($data['file']));
+        }
+        catch (ModelNotFoundException $e) {
+            return [
+                'error' => true,
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            dd($e);
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to remove member!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
+            ];
+        }
+    }
+
+    public function removeFile($id, $idFile)
+    {
+        try{
+
+
+            //skip no presenter para nao usar a entidade alterada pelo presenter
+            $project = $this->repository->skipPresenter()->find($id);
+            $projectFile = $project->files()->find($idFile);
+
+            $deleted = $this->storage->delete($projectFile->name.".".$projectFile->extension);
+            if( $deleted )
+            {
+                $projectFile->delete();
+            }
+        }
+        catch (ModelNotFoundException $e) {
+            return [
+                'error' => true,
+                'message' =>'Not Found.'
+            ];
+        } catch (QueryException $e) {
+            dd($e);
+            $errorMsg = '['.$e->getCode().'] QueryException: Error to remove member!';
+            return [
+                'error' => true,
+                'message' => $errorMsg
+            ];
+        } catch( Exception $e ) {
+            dd($e);
+        }
     }
 }
