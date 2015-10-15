@@ -21,6 +21,7 @@ app.provider('appConfig',['$httpParamSerializerProvider',function($httpParamSeri
                 if(angular.isObject(data)){
                     return $httpParamSerializerProvider.$get()(data);
                 }
+               return data;
            },
            //somente quando for retorno em json e com o objeto data
            transformResponse: function(data,headers){
