@@ -6,7 +6,7 @@ angular.module('app.filters',[]);
 angular.module('app.services',['ngResource']);
 
 //provider para setar configurações da app
-app.provider('appConfig',[function($httpParamSerializerProvider){
+app.provider('appConfig',['$httpParamSerializerProvider',function($httpParamSerializerProvider){
    var config = {
       baseUrl: 'http://localhost:8000',
       project: {
@@ -18,7 +18,9 @@ app.provider('appConfig',[function($httpParamSerializerProvider){
       },
        utils: {
            transformRequest: function(data){
-
+                if(angular.isObject(data)){
+                    return $httpParamSerializerProvider.$get()(data);
+                }
            },
            //somente quando for retorno em json e com o objeto data
            transformResponse: function(data,headers){
