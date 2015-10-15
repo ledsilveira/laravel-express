@@ -1,5 +1,9 @@
 var app = angular.module('app',[
-    'ngRoute','angular-oauth2','app.controllers','app.services','app.filters']);
+    'ngRoute','angular-oauth2','app.controllers','app.services','app.filters',
+    'ui.bootstrap.typeahead', // importa do angular bootstrap o autocomplete, as outras funcionalidade nao sao importadas
+    'ui.bootstrap.datepicker', // carrega o datepicker ui
+    'ui.bootstrap.tpls' // importa templates do auto complete (typeahead)
+]);
 
 angular.module('app.controllers',['ngMessages','angular-oauth2']);
 angular.module('app.filters',[]);

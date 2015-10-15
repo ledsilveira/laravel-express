@@ -26,7 +26,7 @@ class ProjectTransformer extends TransformerAbstract
             //'membros'=>$project->members,
             'name' =>$project->name,
             'description' =>$project->description,
-            'progress' =>$project->progress,
+            'progress' =>(int)$project->progress,
             'status' =>$project->status,
             'due_date' =>$project->due_date,
         ];
