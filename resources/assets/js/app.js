@@ -1,12 +1,43 @@
-var app = angular.module('app',['ngRoute','angular-oauth2','app.controllers','app.services']);
+var app = angular.module('app',[
+    'ngRoute','angular-oauth2','app.controllers','app.services','app.filters']);
 
 angular.module('app.controllers',['ngMessages','angular-oauth2']);
+angular.module('app.filters',[]);
 angular.module('app.services',['ngResource']);
 
 //provider para setar configurações da app
-app.provider('appConfig',function(){
+app.provider('appConfig',[function($httpParamSerializerProvider){
    var config = {
-      baseUrl: 'http://localhost:8000'
+      baseUrl: 'http://localhost:8000',
+      project: {
+            status:[
+                {value:1,label:'Não Iniciado'},
+                {value:2,label:'Iniciado'},
+                {value:3,label:'Concluído'}
+            ]
+      },
+       utils: {
+           transformRequest: function(data){
+
+           },
+           //somente quando for retorno em json e com o objeto data
+           transformResponse: function(data,headers){
+               //pega o conteudo que esta em data e retorna
+               //verifica se o header é json
+               var headresGetter = headers();
+               if(headresGetter['content-type'] == 'application/json' ||
+                   headresGetter['content-type'] == 'text/json')
+               {
+                   var dataJson = JSON.parse(data);
+                   //verifica se veio propriedade data
+                   if( dataJson.hasOwnProperty('data')){
+                       dataJson = dataJson.data;
+                   }
+                   return dataJson;
+               }
+               return data;
+           }
+       }
    };
     return {
         config:config,
@@ -14,7 +45,7 @@ app.provider('appConfig',function(){
             return config;
         }
     }
-});
+}]);
 /**
  * Dentro do config soh pode receber rotas, aqui serao definidas as rotas
  */
@@ -22,24 +53,14 @@ app.config([
     '$routeProvider','$httpProvider','OAuthProvider','OAuthTokenProvider',
     'appConfigProvider',
     function($routeProvider,$httpProvider,OAuthProvider,OAuthTokenProvider,appConfigProvider){
+        //faz o metodo post  e put aceitar o form urlencoded
+        $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+        $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+
         //sobrescrevendo o que exist no resource (transformer dos dados)
-        //somente quando for retorno em json e com o objeto data
-        $httpProvider.defaults.transformResponse = function(data,headers) {
-            //pega o conteudo que esta em data e retorna
-            //verifica se o header é json
-            var headresGetter = headers();
-            if(headresGetter['content-type'] == 'application/json' ||
-                headresGetter['content-type'] == 'text/json')
-            {
-                var dataJson = JSON.parse(data);
-                //verifica se veio propriedade data
-                if( dataJson.hasOwnProperty('data')){
-                    dataJson = dataJson.data;
-                }
-                return dataJson;
-            }
-            return data;
-        };
+        $httpProvider.defaults.transformResponse = appConfigProvider.config.utils.transformResponse;
+        $httpProvider.defaults.transformRequest = appConfigProvider.config.utils.transformRequest;
+
         $routeProvider
         .when('/login',{
             templateUrl:'build/views/login.html',
@@ -68,6 +89,22 @@ app.config([
         .when('/client/:id/remove',{
             templateUrl:'build/views/client/remove.html',
             controller:'ClientRemoveController'
+        })
+        .when('/projects',{
+            templateUrl:'build/views/project/list.html',
+            controller:'ProjectListController'
+        })
+        .when('/project/new',{
+            templateUrl:'build/views/project/new.html',
+            controller:'ProjectNewController'
+        })
+        .when('/project/:id/edit',{
+            templateUrl:'build/views/project/edit.html',
+            controller:'ProjectEditController'
+        })
+        .when('/project/:id/remove',{
+            templateUrl:'build/views/project/remove.html',
+            controller:'ProjectRemoveController'
         })
         .when('/project/:project_id/notes',{
             templateUrl:'build/views/project-note/list.html',
