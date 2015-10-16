@@ -33,6 +33,9 @@ class ProjectFileService
      */
     protected $repository;
 
+    /**
+     * @var ProjectRepository
+     */
     protected $projectRepository;
 
     /**
@@ -50,9 +53,13 @@ class ProjectFileService
      */
     protected $storage;
 
+
     /**
-     * @param ProjectRepository $repository
+     * @param ProjectFileRepository $repository
+     * @param ProjectRepository $projectRepository
      * @param ProjectFileValidator $validator
+     * @param Filesystem $filesystem
+     * @param Storage $storage
      */
     public function __construct(ProjectFileRepository $repository,
                                 ProjectRepository $projectRepository,
@@ -198,39 +205,6 @@ class ProjectFileService
         if($this->storage->exists($projectFile->getFileName())) {
             $this->storage->delete($projectFile->getFileName());
             return $projectFile->delete();
-        }
-    }
-    /**
-     * @param $id
-     * @param $idFile
-     * @return array
-     */
-    public function removeFile($id, $idFile)
-    {
-        try{
-
-            //skip no presenter para nao usar a entidade alterada pelo presenter
-            $project = $this->projectRepository->skipPresenter()->find($id);
-            $projectFile = $project->files()->find($idFile);
-
-            $deleted = $this->storage->delete($projectFile->getFileName());
-            if( $deleted )
-            {
-                $projectFile->delete();
-            }
-        }
-        catch (ModelNotFoundException $e) {
-            return [
-                'error' => true,
-                'message' =>'Not Found.'
-            ];
-        } catch (QueryException $e) {
-            dd($e);
-            $errorMsg = '['.$e->getCode().'] QueryException: Error to remove member!';
-            return [
-                'error' => true,
-                'message' => $errorMsg
-            ];
         }
     }
 }

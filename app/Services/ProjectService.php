@@ -232,6 +232,7 @@ class ProjectService
      *
      * @param $id
      * @param $member_id
+     * @return array
      */
     public function addMember($id, $member_id)
     {
@@ -288,6 +289,7 @@ class ProjectService
      *
      * @param $id
      * @param $member_id
+     * @return array
      */
     public function removeMember($id, $member_id)
     {
@@ -344,6 +346,7 @@ class ProjectService
      *
      * @param $id
      * @param $member_id
+     * @return array
      */
     public function isMember($id, $member_id)
     {
@@ -364,71 +367,4 @@ class ProjectService
         }
     }
 
-    /**
-     * @param array $data
-     * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    public function createFile(array $data)
-    {
-        try{
-
-
-            //skip no presenter para nao usar a entidade alterada pelo presenter
-            $project = $this->repository->skipPresenter()->find($data['project_id']);
-            $projectFile = $project->files()->create($data);
-
-            $this->storage->put($projectFile->id."-".$data['name'].".".$data['extension'], $this->filesystem->get($data['file']));
-        }
-        catch (ModelNotFoundException $e) {
-            return [
-                'error' => true,
-                'message' =>'Not Found.'
-            ];
-        } catch (QueryException $e) {
-            dd($e);
-            $errorMsg = '['.$e->getCode().'] QueryException: Error to remove member!';
-            return [
-                'error' => true,
-                'message' => $errorMsg
-            ];
-        }
-    }
-
-    /**
-     * @param $id
-     * @param $idFile
-     * @return array
-     */
-    public function removeFile($id, $idFile)
-    {
-        try{
-
-
-            //skip no presenter para nao usar a entidade alterada pelo presenter
-            $project = $this->repository->skipPresenter()->find($id);
-            $projectFile = $project->files()->find($idFile);
-
-            $deleted = $this->storage->delete($projectFile->name.".".$projectFile->extension);
-            if( $deleted )
-            {
-                $projectFile->delete();
-            }
-        }
-        catch (ModelNotFoundException $e) {
-            return [
-                'error' => true,
-                'message' =>'Not Found.'
-            ];
-        } catch (QueryException $e) {
-            dd($e);
-            $errorMsg = '['.$e->getCode().'] QueryException: Error to remove member!';
-            return [
-                'error' => true,
-                'message' => $errorMsg
-            ];
-        } catch( Exception $e ) {
-            dd($e);
-        }
-    }
 }

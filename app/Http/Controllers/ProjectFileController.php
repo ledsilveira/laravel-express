@@ -143,12 +143,12 @@ class ProjectFileController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id,$idFile)
+    public function destroy($id)
     {
         if( $this->service->checkProjectOwner($id) == false )
         {
             return ['error'=>'access forbiden'];
         }
-        $this->service->removeFile($id,$idFile);
+        $this->service->delete($id);
     }
 }

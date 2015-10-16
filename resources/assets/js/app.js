@@ -146,11 +146,11 @@ app.config([
             templateUrl:'build/views/project-file/new.html',
             controller:'ProjectFileNewController'
         })
-        .when('/project/:project_id/files/:idfile/edit',{
+        .when('/project/:project_id/files/:idFile/edit',{
             templateUrl:'build/views/project-file/edit.html',
             controller:'ProjectFileEditController'
         })
-        .when('/project/:project_id/files/:idfile/remove',{
+        .when('/project/:project_id/files/:idFile/remove',{
             templateUrl:'build/views/project-file/remove.html',
             controller:'ProjectFileRemoveController'
         });
