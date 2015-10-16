@@ -22,6 +22,12 @@ app.provider('appConfig',['$httpParamSerializerProvider',function($httpParamSeri
                 {value:3,label:'Concluído'}
             ]
       },
+      projectTask:{
+        status:[
+            {value:1,label:'Incompleta'},
+            {value:2,label:'Completa'}
+        ]
+      },
       urls: {
         projectFile: '/project/{{project_id}}/file/{{idFile}}'
       },
@@ -153,6 +159,22 @@ app.config([
         .when('/project/:project_id/files/:idFile/remove',{
             templateUrl:'build/views/project-file/remove.html',
             controller:'ProjectFileRemoveController'
+        })
+        .when('/project/:project_id/tasks',{
+            templateUrl:'build/views/project-task/list.html',
+            controller:'ProjectTaskListController'
+        })
+        .when('/project/:project_id/task/new',{
+            templateUrl:'build/views/project-task/new.html',
+            controller:'ProjectTaskNewController'
+        })
+        .when('/project/:project_id/task/:idTask/edit',{
+            templateUrl:'build/views/project-task/edit.html',
+            controller:'ProjectTaskEditController'
+        })
+        .when('/project/:project_id/task/:idTask/remove',{
+            templateUrl:'build/views/project-task/remove.html',
+            controller:'ProjectTaskRemoveController'
         });
     OAuthProvider.configure({
         baseUrl: appConfigProvider.config.baseUrl,

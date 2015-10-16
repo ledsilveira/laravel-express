@@ -65,7 +65,6 @@ class ProjectNoteController extends Controller
         return $this->service->create($request->all());
     }
 
-
     /**
      * @param $id
      * @param $noteId
@@ -87,7 +86,6 @@ class ProjectNoteController extends Controller
         //
     }
 
-
     /**
      * @param Request $request
      * @param $id
@@ -98,7 +96,6 @@ class ProjectNoteController extends Controller
     {
         return $this->service->update($request->all(),$noteId);
     }
-
 
     /**
      * @param $id

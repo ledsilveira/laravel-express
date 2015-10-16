@@ -11,6 +11,7 @@ namespace CodeProject\Services;
 
 use CodeProject\Repositories\ProjectTaskRepository;
 use CodeProject\Validators\ProjectTaskValidator;
+use Prettus\Validator\Exceptions\ValidatorException;
 
 /**
  * Class ProjectTaskService
