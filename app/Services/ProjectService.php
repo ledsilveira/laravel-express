@@ -60,6 +60,46 @@ class ProjectService
     }
 
     /**
+     * @param $projectId
+     * @return mixed
+     */
+    public function checkProjectOwner($projectId)
+    {
+        //Facade do Oauth pega o owner_id de quem está logado
+        $userId = \Authorizer::getResourceOwnerId();
+        //Usando o php artisan route:list que o parametro requeste nas chamdas de projetos
+        // é o {project}, este é o nome que deve ser pego do request
+        //$projectId = $request->project;
+        return $this->repository->isOwner($projectId, $userId);
+    }
+
+    /**
+     * @param $projectId
+     * @return mixed
+     */
+    public function checkProjectMember($projectId)
+    {
+        $userId = \Authorizer::getResourceOwnerId();
+        return $this->repository->hasMember($projectId, $userId);
+    }
+
+    /**
+     * @param $projectId
+     * @return bool
+     */
+    public function checkProjectPermissions($projectId)
+    {
+        if( $this->checkProjectOwner($projectId) || $this->checkProjectMember($projectId))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
      * @param array $data
      * @return array|mixed
      */
@@ -324,6 +364,11 @@ class ProjectService
         }
     }
 
+    /**
+     * @param array $data
+     * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
     public function createFile(array $data)
     {
         try{
@@ -350,6 +395,11 @@ class ProjectService
         }
     }
 
+    /**
+     * @param $id
+     * @param $idFile
+     * @return array
+     */
     public function removeFile($id, $idFile)
     {
         try{

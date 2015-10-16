@@ -75,7 +75,7 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        if( $this->checkProjectPermissions($id) == false )
+        if( $this->service->checkProjectPermissions($id) == false )
         {
             return ['error'=>'access forbiden'];
         }
@@ -102,7 +102,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if( $this->checkProjectOwner($id) == false )
+        if( $this->service->checkProjectOwner($id) == false )
         {
             return ['error'=>'access forbiden'];
         }
@@ -117,39 +117,11 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        if( $this->checkProjectOwner($id) == false )
+        if( $this->service->checkProjectOwner($id) == false )
         {
             return ['error'=>'access forbiden'];
         }
         return $this->service->delete($id);
-    }
-
-    private function checkProjectOwner($projectId)
-    {
-        //Facade do Oauth pega o owner_id de quem está logado
-        $userId = \Authorizer::getResourceOwnerId();
-        //Usando o php artisan route:list que o parametro requeste nas chamdas de projetos
-        // é o {project}, este é o nome que deve ser pego do request
-        //$projectId = $request->project;
-        return $this->repository->isOwner($projectId, $userId);
-    }
-
-    private function checkProjectMember($projectId)
-    {
-        $userId = \Authorizer::getResourceOwnerId();
-        return $this->repository->hasMember($projectId, $userId);
-    }
-
-    private function checkProjectPermissions($projectId)
-    {
-        if( $this->checkProjectOwner($projectId) || $this->checkProjectMember($projectId))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
     public function addMember(Request $request,$projectId)
