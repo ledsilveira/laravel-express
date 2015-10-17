@@ -45,7 +45,7 @@
 		<script src="{{asset("build/js/vendor/query-string.js")}}"></script>
 		<script src="{{asset("build/js/vendor/angular-oauth2.min.js")}}"></script>
 		<script src="{{asset("build/js/vendor/ng-file-upload.min.js")}}"></script>
-
+		<script src="{{asset("build/js/vendor/http-auth-interceptor.js")}}"></script>
 		<script src="{{asset("build/js/vendor/dirPagination.js")}}"></script>
 
 		<script src="{{asset("build/js/app.js")}}"></script>
@@ -92,6 +92,7 @@
 
 		<!-- services -->
 		<script src="{{asset("build/js/services/url.js")}}"></script>
+		<script src="{{asset("build/js/services/oauthFixInterceptor.js")}}"></script>
 		<script src="{{asset("build/js/services/client.js")}}"></script>
 		<script src="{{asset("build/js/services/project.js")}}"></script>
 		<script src="{{asset("build/js/services/projectNote.js")}}"></script>

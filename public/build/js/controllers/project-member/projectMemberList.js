@@ -6,6 +6,7 @@ angular.module('app.controllers')
 
             $scope.save = function () {
 
+                //@todo refazer como no projectFile alterando as urls, e usar o scope comentado para manter padrão
                 $http({
                     method: 'POST',
                     url: '/project/'+$routeParams.project_id + '/addMember',

@@ -4,7 +4,8 @@ var app = angular.module('app',[
     'ui.bootstrap.datepicker', // carrega o datepicker ui
     'ui.bootstrap.tpls', // importa templates do auto complete (typeahead)
     'ngFileUpload', // importa a lib de upload de arquivo
-    'mgcrea.ngStrap.navbar','ui.bootstrap.dropdown'
+    'mgcrea.ngStrap.navbar','ui.bootstrap.dropdown','ui.bootstrap.modal',
+    'http-auth-interceptor'
 ]);
 
 angular.module('app.controllers',['ngMessages','angular-oauth2']);
@@ -82,10 +83,21 @@ app.config([
         $httpProvider.defaults.transformResponse = appConfigProvider.config.utils.transformResponse;
         $httpProvider.defaults.transformRequest = appConfigProvider.config.utils.transformRequest;
 
+        //intercepta o oauth para ajustar o problmea da lib php para refresh token
+        $httpProvider.interceptors.push('oauthFixInterceptor');
+
         $routeProvider
         .when('/login',{
             templateUrl:'build/views/login.html',
             controller:'LoginController'
+        })
+        .when('/logout',{
+            resolve: {
+                logout: ['$location','OAuthToken', function($location, OAuthToken){
+                    OAuthToken.removeToken();
+                    return $location.path('/login');
+                }]
+            }
         })
         .when('/home',{
             templateUrl:'build/views/home.html',
@@ -194,7 +206,7 @@ app.config([
         grantPath: 'oauth/access_token'
     });
 
-    //permite trabalhar sem https
+    //permite trabalhar sem https @todo não deve ser usado em producao
     OAuthTokenProvider.configure({
         name: 'token',
         options:{
@@ -203,29 +215,46 @@ app.config([
     })
 }]);
 
-app.run(['$rootScope','$location', '$window', 'OAuth',
-    function($rootScope, $location, $window, OAuth) {
+app.run(['$rootScope','$location','$http', 'OAuth',
+    function($rootScope, $location, $http, OAuth) {
 
-   // $rootScope.$on('$routeChangeStart',function(event, next,current) {
-   //     if(next.$$route.originalPath !='/login') {
-   //         if(!OAuth.isAuthenticated()){
-   //             $location.path('login');
-   //         }
-   //     }
-   // });
+    //autorizacao, quando nao logado volta sempre para pagina de login
+    $rootScope.$on('$routeChangeStart',function(event, next,current) {
+        if(next.$$route.originalPath !='/login') {
+            if(!OAuth.isAuthenticated()){
+                $location.path('login');
+            }
+        }
+    });
 
-    $rootScope.$on('oauth:error', function(event, rejection) {
+    $rootScope.$on('oauth:error', function(event, data) {
         // Ignore `invalid_grant` error - should be catched on `LoginController`.
-        if ('invalid_grant' === rejection.data.error) {
+        if ('invalid_grant' === data.rejection.data.error) {
             return;
         }
 
         // Refresh token when a `invalid_token` error occurs.
-        if ('invalid_token' === rejection.data.error) {
-            return OAuth.getRefreshToken();
+        if ('access_denied' === data.rejection.data.error) {
+            //como pode ter muitas requisicoes asincronas aqui deve validar que requisicoes pararelas na hora de revalidar
+            // o token não de problema e nao perca o token do refresnToken
+            if(!$rootScope.isRefreshingToken) {
+                $rootScope.isRefreshingToken = true;
+                return OAuth.getRefreshToken().then(function (response) {
+                    $rootScope.isRefreshingToken = false;
+                    return $http(data.rejection.config).then(function (response) {
+                        //reenvio da requisicao do authToken
+                        return data.deferred.resolve(response);
+                    });
+                });
+            } else {
+                return $http(data.rejection.config).then(function (response) {
+                    //reenvio da requisicao do authToken
+                    return data.deferred.resolve(response);
+                });
+            }
         }
 
         // Redirect to `/login` with the `error_reason`.
-        return $window.location.href = '/login?error_reason=' + rejection.data.error;
+        return $location.path('login');
     });
 }]);
