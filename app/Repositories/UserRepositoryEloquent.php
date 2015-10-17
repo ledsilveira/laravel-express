@@ -2,9 +2,11 @@
 
 namespace CodeProject\Repositories;
 
+use CodeProject\Entities\User;
+use CodeProject\Presenters\UserPresenter;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use CodeProject\Entities\User;
+
 
 /**
  * Class UserRepositoryEloquent
@@ -12,6 +14,9 @@ use CodeProject\Entities\User;
  */
 class UserRepositoryEloquent extends BaseRepository implements UserRepository
 {
+    protected $fieldSearchable = [
+        'name'
+    ];
     /**
      * Specify Model class name
      *
@@ -28,5 +33,10 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     public function boot()
     {
         $this->pushCriteria( app(RequestCriteria::class) );
+    }
+
+    public function presenter()
+    {
+        return UserPresenter::class;
     }
 }

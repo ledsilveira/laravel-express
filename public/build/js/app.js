@@ -3,7 +3,8 @@ var app = angular.module('app',[
     'ui.bootstrap.typeahead', // importa do angular bootstrap o autocomplete, as outras funcionalidade nao sao importadas
     'ui.bootstrap.datepicker', // carrega o datepicker ui
     'ui.bootstrap.tpls', // importa templates do auto complete (typeahead)
-    'ngFileUpload' // importa a lib de upload de arquivo
+    'ngFileUpload', // importa a lib de upload de arquivo
+    'mgcrea.ngStrap.navbar','ui.bootstrap.dropdown'
 ]);
 
 angular.module('app.controllers',['ngMessages','angular-oauth2']);
@@ -70,7 +71,9 @@ app.provider('appConfig',['$httpParamSerializerProvider',function($httpParamSeri
 app.config([
     '$routeProvider','$httpProvider','OAuthProvider','OAuthTokenProvider',
     'appConfigProvider',
-    function($routeProvider,$httpProvider,OAuthProvider,OAuthTokenProvider,appConfigProvider){
+    function($routeProvider,$httpProvider,OAuthProvider,
+             OAuthTokenProvider,appConfigProvider){
+
         //faz o metodo post  e put aceitar o form urlencoded
         $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
         $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
@@ -175,6 +178,14 @@ app.config([
         .when('/project/:project_id/task/:idTask/remove',{
             templateUrl:'build/views/project-task/remove.html',
             controller:'ProjectTaskRemoveController'
+        })
+        .when('/project/:project_id/members',{
+            templateUrl:'build/views/project-member/list.html',
+            controller:'ProjectMemberListController'
+        })
+        .when('/project/:project_id/member/:idMember/remove',{
+            templateUrl:'build/views/project-member/remove.html',
+            controller:'ProjectMemberRemoveController'
         });
     OAuthProvider.configure({
         baseUrl: appConfigProvider.config.baseUrl,
@@ -192,7 +203,17 @@ app.config([
     })
 }]);
 
-app.run(['$rootScope', '$window', 'OAuth', function($rootScope, $window, OAuth) {
+app.run(['$rootScope','$location', '$window', 'OAuth',
+    function($rootScope, $location, $window, OAuth) {
+
+   // $rootScope.$on('$routeChangeStart',function(event, next,current) {
+   //     if(next.$$route.originalPath !='/login') {
+   //         if(!OAuth.isAuthenticated()){
+   //             $location.path('login');
+   //         }
+   //     }
+   // });
+
     $rootScope.$on('oauth:error', function(event, rejection) {
         // Ignore `invalid_grant` error - should be catched on `LoginController`.
         if ('invalid_grant' === rejection.data.error) {

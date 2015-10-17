@@ -142,6 +142,11 @@ class ProjectController extends Controller
 
     public function members($projectId)
     {
-        //@todo implementar, pegar a lista de membros para este projeto
+        return $this->repository->getMembers($projectId);
+    }
+
+    public function getMember($projectId,$memberId)
+    {
+        return $this->repository->getMember($projectId,$memberId);
     }
 }
