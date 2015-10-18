@@ -83,6 +83,9 @@ app.config([
         $httpProvider.defaults.transformResponse = appConfigProvider.config.utils.transformResponse;
         $httpProvider.defaults.transformRequest = appConfigProvider.config.utils.transformRequest;
 
+        //removendo os 2 interceptors declarados pelo app para usar somente o nosso
+        $httpProvider.interceptors.splice(0,1);
+        $httpProvider.interceptors.splice(0,1);
         //intercepta o oauth para ajustar o problmea da lib php para refresh token
         $httpProvider.interceptors.push('oauthFixInterceptor');
 
@@ -215,8 +218,8 @@ app.config([
     })
 }]);
 
-app.run(['$rootScope','$location','$http', 'OAuth',
-    function($rootScope, $location, $http, OAuth) {
+app.run(['$rootScope','$location','$http', '$modal', 'httpBuffer', 'OAuth',
+    function($rootScope, $location, $http,$modal, httpBuffer,OAuth) {
 
     //autorizacao, quando nao logado volta sempre para pagina de login
     $rootScope.$on('$routeChangeStart',function(event, next,current) {
@@ -235,23 +238,15 @@ app.run(['$rootScope','$location','$http', 'OAuth',
 
         // Refresh token when a `invalid_token` error occurs.
         if ('access_denied' === data.rejection.data.error) {
-            //como pode ter muitas requisicoes asincronas aqui deve validar que requisicoes pararelas na hora de revalidar
-            // o token não de problema e nao perca o token do refresnToken
-            if(!$rootScope.isRefreshingToken) {
-                $rootScope.isRefreshingToken = true;
-                return OAuth.getRefreshToken().then(function (response) {
-                    $rootScope.isRefreshingToken = false;
-                    return $http(data.rejection.config).then(function (response) {
-                        //reenvio da requisicao do authToken
-                        return data.deferred.resolve(response);
-                    });
+            httpBuffer.append(data.rejection.config, data.deferred);
+            if( !$rootScope.loginModalOpened) {
+                var modalInstance = $modal.open({
+                    templateUrl: 'build/views/templates/loginModal.html',
+                    controller: 'LoginModalController'
                 });
-            } else {
-                return $http(data.rejection.config).then(function (response) {
-                    //reenvio da requisicao do authToken
-                    return data.deferred.resolve(response);
-                });
+                $rootScope.loginModalOpened = true;
             }
+            return;
         }
 
         // Redirect to `/login` with the `error_reason`.
