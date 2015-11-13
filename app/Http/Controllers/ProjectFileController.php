@@ -2,8 +2,8 @@
 
 namespace CodeProject\Http\Controllers;
 
-use CodeProject\Repositories\ProjectRepository;
-use CodeProject\Services\ProjectService;
+use CodeProject\Repositories\ProjectFileRepository;
+use CodeProject\Services\ProjectFileService;
 use Illuminate\Http\Request;
 
 use CodeProject\Http\Requests;
@@ -16,33 +16,35 @@ class ProjectFileController extends Controller
 {
 
     /**
-     * @var ProjectRepository
+     * @var ProjectFileRepository
      */
     private $repository;
 
     /**
-     * @var ProjectService
+     * @var ProjectFileService
      */
     private $service;
 
     /**
-     * @param ProjectRepository $repository
-     * @param ProjectService $service
+     * @param ProjectFileRepository $repository
+     * @param ProjectFileService $service
      */
-    public function __construct(ProjectRepository $repository, ProjectService $service)
+    public function __construct(ProjectFileRepository $repository, ProjectFileService $service)
     {
         $this->repository = $repository;
         $this->service = $service;
     }
+
     /**
      * Display a listing of the resource.
      *
+     * @param $id
      * @return Response
      */
-    public function index()
+    public function index($id)
     {
         //return $this->repository->with('client')->with('user')->all();
-        return $this->repository->with('client')->with('user')->with('members')->findWhere(['owner_id' => \Authorizer::getResourceOwnerId()]);
+        return $this->repository->findWhere(['project_id' => $id]);
     }
 
     /**
@@ -71,10 +73,26 @@ class ProjectFileController extends Controller
         $data['name'] = $request->name;
         $data['project_id'] = $request->project_id;
         $data['description'] = $request->description;
+        return $this->service->create($data);
 
-        $this->service->createFile($data);
 
+    }
 
+    public function showFile($id)
+    {
+        if( $this->service->checkProjectPermissions($id) == false )
+        {
+            return ['error'=>'access forbiden'];
+        }
+        $filePath = $this->service->getFilePath($id);
+        $fileContent = file_get_contents($filePath);
+        $file64 = base64_encode($fileContent);
+        //essa funcão download inserir no response os bites do arquivo
+        return [
+            'file' => $file64,
+            'size' => filesize($filePath),
+            'name' => $this->service->getFileName($id)
+        ];
     }
 
     /**
@@ -85,11 +103,11 @@ class ProjectFileController extends Controller
      */
     public function show($id)
     {
-        if( $this->checkProjectPermissions($id) == false )
+        if( $this->service->checkProjectPermissions($id) == false )
         {
             return ['error'=>'access forbiden'];
         }
-        return $this->repository->with('client')->with('user')->find($id);
+        return $this->repository->find($id);
     }
 
     /**
@@ -112,11 +130,11 @@ class ProjectFileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if( $this->checkProjectOwner($id) == false )
+        if( $this->service->checkProjectOwner($id) == false )
         {
             return ['error'=>'access forbiden'];
         }
-        return $this->service->upddate($request->all(),$id);
+        return $this->service->update($request->all(),$id);
     }
 
     /**
@@ -125,41 +143,12 @@ class ProjectFileController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id,$idFile)
+    public function destroy($id)
     {
-        if( $this->checkProjectOwner($id) == false )
+        if( $this->service->checkProjectOwner($id) == false )
         {
             return ['error'=>'access forbiden'];
         }
-        $this->service->removeFile($id,$idFile);
-        //$this->repository->find($id)->delete();
-    }
-
-    private function checkProjectOwner($projectId)
-    {
-        //Facade do Oauth pega o owner_id de quem esta logado
-        $userId = \Authorizer::getResourceOwnerId();
-        //Usando o php artisan route:list que o parametro requeste nas chamdas de projetos
-        // eh o {project}, este eh o nome que deve ser pego do request
-        //$projectId = $request->project;
-        return $this->repository->isOwner($projectId, $userId);
-    }
-
-    private function checkProjectMember($projectId)
-    {
-        $userId = \Authorizer::getResourceOwnerId();
-        return $this->repository->hasMember($projectId, $userId);
-    }
-
-    private function checkProjectPermissions($projectId)
-    {
-        if( $this->checkProjectOwner($projectId) || $this->checkProjectMember($projectId))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        $this->service->delete($id);
     }
 }

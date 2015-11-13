@@ -60,6 +60,46 @@ class ProjectService
     }
 
     /**
+     * @param $projectId
+     * @return mixed
+     */
+    public function checkProjectOwner($projectId)
+    {
+        //Facade do Oauth pega o owner_id de quem está logado
+        $userId = \Authorizer::getResourceOwnerId();
+        //Usando o php artisan route:list que o parametro requeste nas chamdas de projetos
+        // é o {project}, este é o nome que deve ser pego do request
+        //$projectId = $request->project;
+        return $this->repository->isOwner($projectId, $userId);
+    }
+
+    /**
+     * @param $projectId
+     * @return mixed
+     */
+    public function checkProjectMember($projectId)
+    {
+        $userId = \Authorizer::getResourceOwnerId();
+        return $this->repository->hasMember($projectId, $userId);
+    }
+
+    /**
+     * @param $projectId
+     * @return bool
+     */
+    public function checkProjectPermissions($projectId)
+    {
+        if( $this->checkProjectOwner($projectId) || $this->checkProjectMember($projectId))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
      * @param array $data
      * @return array|mixed
      */
@@ -192,6 +232,7 @@ class ProjectService
      *
      * @param $id
      * @param $member_id
+     * @return array
      */
     public function addMember($id, $member_id)
     {
@@ -248,6 +289,7 @@ class ProjectService
      *
      * @param $id
      * @param $member_id
+     * @return array
      */
     public function removeMember($id, $member_id)
     {
@@ -304,6 +346,7 @@ class ProjectService
      *
      * @param $id
      * @param $member_id
+     * @return array
      */
     public function isMember($id, $member_id)
     {
@@ -324,61 +367,4 @@ class ProjectService
         }
     }
 
-    public function createFile(array $data)
-    {
-        try{
-
-
-            //skip no presenter para nao usar a entidade alterada pelo presenter
-            $project = $this->repository->skipPresenter()->find($data['project_id']);
-            $projectFile = $project->files()->create($data);
-
-            $this->storage->put($projectFile->id."-".$data['name'].".".$data['extension'], $this->filesystem->get($data['file']));
-        }
-        catch (ModelNotFoundException $e) {
-            return [
-                'error' => true,
-                'message' =>'Not Found.'
-            ];
-        } catch (QueryException $e) {
-            dd($e);
-            $errorMsg = '['.$e->getCode().'] QueryException: Error to remove member!';
-            return [
-                'error' => true,
-                'message' => $errorMsg
-            ];
-        }
-    }
-
-    public function removeFile($id, $idFile)
-    {
-        try{
-
-
-            //skip no presenter para nao usar a entidade alterada pelo presenter
-            $project = $this->repository->skipPresenter()->find($id);
-            $projectFile = $project->files()->find($idFile);
-
-            $deleted = $this->storage->delete($projectFile->name.".".$projectFile->extension);
-            if( $deleted )
-            {
-                $projectFile->delete();
-            }
-        }
-        catch (ModelNotFoundException $e) {
-            return [
-                'error' => true,
-                'message' =>'Not Found.'
-            ];
-        } catch (QueryException $e) {
-            dd($e);
-            $errorMsg = '['.$e->getCode().'] QueryException: Error to remove member!';
-            return [
-                'error' => true,
-                'message' => $errorMsg
-            ];
-        } catch( Exception $e ) {
-            dd($e);
-        }
-    }
 }

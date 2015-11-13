@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/laravel-express.iml" filepath="$PROJECT_DIR$/.idea/laravel-express.iml" />
+      <module fileurl="file://D:/xampp_18_07_2015/htdocs/taurus-project-manager/.idea/Taurus Project.iml" filepath="D:/xampp_18_07_2015/htdocs/taurus-project-manager/.idea/Taurus Project.iml" />
     </modules>
   </component>
 </project>

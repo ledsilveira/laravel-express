@@ -18,7 +18,7 @@ angular.module('app.controllers')
                     //primeiro sem parametros, segundo sem dados e terceiro a funcao de sucesso
                     User.autenthicated({},{},function(data){
                         $cookies.putObject('user',data);
-                        $location.path('home');
+                        $location.path('painel');
                     });
 
                 },function(data){

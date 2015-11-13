@@ -21,12 +21,11 @@ class ProjectTransformer extends TransformerAbstract
             'project_id' =>$project->id,
             'client_id' =>$project->client_id,
             'owner_id' =>$project->owner_id,
-            'client' =>$project->client,
-            //'user' =>$project->user,
-            //'membros'=>$project->members,
             'name' =>$project->name,
+            'client' =>$project->client,
+
             'description' =>$project->description,
-            'progress' =>$project->progress,
+            'progress' =>(int)$project->progress,
             'status' =>$project->status,
             'due_date' =>$project->due_date,
         ];

@@ -44,8 +44,6 @@ Route::group(['middleware'=>'oauth'], function(){
 
     Route::group(['prefix'=>'project'], function(){
 
-        Route::get('{id}/members', 'ProjectController@members' );
-
         Route::get('{id}/note', 'ProjectNoteController@index' );
         Route::post('{id}/note', 'ProjectNoteController@store' );
         Route::get('{id}/note/{noteId}', 'ProjectNoteController@show' );
@@ -53,8 +51,12 @@ Route::group(['middleware'=>'oauth'], function(){
         Route::delete('{id}/note/{noteId}', 'ProjectNoteController@destroy' );
 
         //rota aquivos
+        Route::get('{id}/file','ProjectFileController@index');
+        Route::get('/file/{idFile}','ProjectFileController@show');
+        Route::get('/file/{idFile}/download','ProjectFileController@showFile');
         Route::post('{id}/file','ProjectFileController@store');
-        Route::delete('{id}/file/{idFile}','ProjectFileController@destroy');
+        Route::put('/file/{idFile}','ProjectFileController@update');
+        Route::delete('/file/{idFile}','ProjectFileController@destroy');
 
         Route::get('{id}/task', 'ProjectTaskController@index' );
         Route::post('{id}/task', 'ProjectTaskController@store' );
@@ -62,12 +64,18 @@ Route::group(['middleware'=>'oauth'], function(){
         Route::put('{id}/task/{taskId}', 'ProjectTaskController@update' );
         Route::delete('{id}/task/{taskId}', 'ProjectTaskController@destroy' );
 
-        Route::post('{id}/addMember', 'ProjectController@addMember' );
-        Route::delete('{id}/removeMember/{memberId}', 'ProjectController@removeMember' );
+        Route::get('{id}/member', 'ProjectController@members' );
         Route::get('{id}/isMember/{memberId}', 'ProjectController@isMember' );
+        Route::post('{id}/addMember', 'ProjectController@addMember' );
+
+
+        Route::get('{id}/member/{memberId}', 'ProjectController@getMember' );
+        Route::delete('{id}/member/{memberId}', 'ProjectController@removeMember' );
+
     });
 
     Route::get('user/authenticated', 'UserController@authenticated' );
+    route::resource('user', 'UserController', ['except' => ['create','edit']]);
 
 });
 
