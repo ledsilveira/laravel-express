@@ -1,25 +1,29 @@
 <header class="header-global">
+    <div class="top">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#"><img alt="Brand" src="build/images/red-46383_640.png" height="31"> </a>
+                </div>
 
-
-<!-- Menu Real
-    <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Brand</a>
-            </div>
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">Link</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#/painel"><i class="fa fa-home"></i> Painel <span class="sr-only">(current)</span></a></li>
+                        <li><a href="#/projects"><i class="flaticon-data-analytics1"></i> Projetos</a></li>
+                        <li><a href="#/clients"><i class="flaticon-office-worker2"></i>Clientes</a></li>
+                        <li><a href="#/tasks"><i class="flaticon-checkmark10"></i> Tarefas</a></li>
+                        <li><a href="sprints.html"><i class="fa fa-repeat"></i> Sprints</a></li>
+                        <!--<li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
                             <li><a href="#">Action</a></li>
                             <li><a href="#">Another action</a></li>
                             <li><a href="#">Something else here</a></li>
@@ -27,75 +31,67 @@
                             <li><a href="#">Separated link</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="#">One more separated link</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
-                    </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Link</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-Fim menu real-->
+                          </ul>
+                        </li>-->
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="avatar flaticon-user7"></i>
+                                Olá, Leandro</a>
+                            <ul class="dropdown-menu">
+                                <li><a >Editar Conta</a></li>
+                                <li><a >Administra&ccedil;&atilde;o</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <form class="navbar-form navbar-right form-inline" role="search">
+                        <input type="text" class="form-control" name="q" placeholder="Busca" />
+                        <button class="btn" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </form>
 
-<!-- menu nao adpatavel movel -->
-    <div class="top">
-        <div class="container">
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <!-- <div class="container">
             <div class="row">
                 <div class="col-sm-2">
-                    <a href="#/home" class="brand">
-                        <img src="build/images/logo.png" alt=""/>
+                    <a href="index.html" class="brand">
+                        <img src="images/logo.png" alt=""/>
                         <span class="text">Project Manager</span>
-                    </a> <!-- /brand -->
+                    </a>
                 </div>
                 <div class="col-sm-6">
                     <menu class="menu">
                         <li>
-                            <a href="#/home">
+                            <a href="index.html" class="actived">
                                 <i class="fa fa-home"></i> Painel
                             </a>
                         </li>
                         <li>
-                            <a data-match-route="/projects" href="#/projects">
+                            <a href="projetos.html">
                                 <i class="flaticon-data-analytics1"></i> Projetos
                             </a>
                         </li>
                         <li>
-                            <a data-match-route="/clients" ng-href="#/clients">
+                            <a href="clientes.html">
                                 <i class="flaticon-office-worker2"></i> Clientes
                             </a>
                         </li>
-                        <!-- @todo: ser menu de arquivos do projeto em contexto
                         <li>
-                            <a href="#/">
+                            <a href="arquivos.html">
                                 <i class="flaticon-file94"></i> Arquivos
                             </a>
                         </li>
-                        -->
-                        <!-- @todo: ser menu de arquivos de tarefas em contexto
-                       <li>
-                           <a href="tarefas.html">
-                               <i class="flaticon-checkmark10"></i> Tarefas
-                           </a>
-                       </li>
-                       -->
-                   </menu> <!-- /menu -->
+                        <li>
+                            <a href="tarefas.html">
+                                <i class="flaticon-checkmark10"></i> Tarefas
+                            </a>
+                        </li>
+                    </menu>
                 </div>
                 <div class="col-sm-2">
                     <form action="" class="form-inline" role="form">
@@ -103,24 +99,26 @@ Fim menu real-->
                         <button type="submit">
                             <i class="fa fa-search"></i>
                         </button>
-                    </form> <!-- /form-search -->
+                    </form>
                 </div>
                 <div class="col-sm-2">
                     <a href="" class="userinfo">
                         <i class="avatar flaticon-user7"></i>
-                        Olá, {{ user.name }}
+                        Olá, Alfredo
                     </a>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div> <!-- /top -->
     <div class="bottom">
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <h1 class="h3">{{ pageTitle}}</h1>
+                    <h1 class="h3">Painel</h1>
                 </div>
             </div>
         </div>
     </div> <!-- /bottom -->
+
+
 </header> <!-- /header-global -->

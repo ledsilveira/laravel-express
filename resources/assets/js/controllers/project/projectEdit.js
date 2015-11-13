@@ -32,7 +32,7 @@ angular.module('app.controllers')
                 {
                     //pega o id do user que está setado no cookie e seta como dono do projeto
                     $scope.project.owner_id = $cookies.getObject('user').id;
-                    Project.update({id:$scope.project.project_id},$scope.project,function(){
+                    Project.update({project_id:$scope.project.project_id},$scope.project,function(){
                         $location.path('/projects');
                     });
 

@@ -16,7 +16,7 @@ angular.module('app.services',['ngResource']);
 //provider para setar configurações da app
 app.provider('appConfig',['$httpParamSerializerProvider',function($httpParamSerializerProvider){
    var config = {
-      baseUrl: 'http://localhost:8000',
+      baseUrl: 'http://localhost:8080/taurus-project-manager/public',
       project: {
             status:[
                 {value:1,label:'Não Iniciado'},
@@ -90,6 +90,10 @@ app.config([
         $httpProvider.interceptors.push('oauthFixInterceptor');
 
         $routeProvider
+        .when('/',{
+                templateUrl:'build/views/login.html',
+                controller:'LoginController'
+        })
         .when('/login',{
             templateUrl:'build/views/login.html',
             controller:'LoginController'
@@ -125,6 +129,10 @@ app.config([
         .when('/client/:id/remove',{
             templateUrl:'build/views/client/remove.html',
             controller:'ClientRemoveController'
+        })
+        .when('/painel',{
+            templateUrl:'build/views/project/painel.html',
+            controller:'ProjectListController'
         })
         .when('/projects',{
             templateUrl:'build/views/project/list.html',

@@ -3,7 +3,7 @@
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">Listagem de Projetos</div>
-                <div class="panel-body">
+                <div class="panel-body table-responsive">
                     <table class="table">
                         <thead>
                         <tr>
@@ -23,6 +23,7 @@
                             <td>{{ o.status }}</td>
                             <td>{{ o.due_date | dateBr }}</td>
                             <td>
+                                <a ng-href="#/project/{{ o.project_id }}/tasks">Tarefas</a> |
                                 <a ng-href="#/project/{{ o.project_id }}/edit">Editar</a> |
                                 <a ng-href="#/project/{{ o.project_id }}/remove">Excluir</a>
                             </td>

@@ -11,7 +11,7 @@
 		<link href="{{ asset('build/css/flaticon.css') }}" rel="stylesheet"/>
 		<link href="{{ asset('build/css/font-awesome.css') }}" rel="stylesheet"/>
 	@else
-		<link href="{{ elixir('css/all.css') }}" rel="stylesheet"/>
+		<link href="{{ asset('css/all.css') }}" rel="stylesheet"/>
 	@endif
 
 	<!-- Fonts -->
@@ -24,10 +24,10 @@
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 </head>
-<body>
+<body class="page-dashboard">
 
 	<load-template url="build/views/templates/menu.html"></load-template>
-
+	<!-- <load-template url="build/views/login.html"></load-template> -->
 	<div ng-view></div>
 
 	<!-- Scripts -->
@@ -103,7 +103,7 @@
 		<script src="{{asset("build/js/services/projectMember.js")}}"></script>
 		<script src="{{asset("build/js/services/user.js")}}"></script>
 	@else
-		<script src="{{elixir("js/all.js")}}"></script>
+		<script src="{{asset("js/all.js")}}"></script>
 	@endif
 
 </body>

@@ -3,11 +3,13 @@ angular.module('app.controllers')
         '$scope','$location','$routeParams','appConfig','ProjectTask',function($scope,$location,$routeParams,appConfig,ProjectTask){
             $scope.projectTask = new ProjectTask();
 
+            $scope.projectTask.project_id = $routeParams.project_id;
+
             $scope.save = function () {
                 if($scope.form.$valid){
                     //valor default de status
                     $scope.projectTask.status = appConfig.projectTask.status[0].value;
-                    $scope.projectTask.project_id = $routeParams.project_id;
+
                     $scope.projectTask.$save({project_id: $routeParams.project_id}).then(function(){
                         //zera os dados
                         $scope.projectTask = new ProjectTask();

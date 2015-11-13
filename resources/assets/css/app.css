@@ -257,7 +257,7 @@
   border-top: 1px solid #EAEBEC; }
 
 .panel-default {
-  border-color: #DDDEE0; }
+  border-color: #DDDEE0; cursor:pointer; }
 
 .panel-default > .panel-heading:not(.no-border-bottom),
 .panel-default > .panel-footer:not(.no-border-top) {
@@ -2053,7 +2053,7 @@
 /* Boxed Manager */
 .boxed-manager > div {
   float: left;
-  width: 20%;
+  /*width: 20%;*/
   border: 1px solid transparent;
   border-right: 1px solid #DFDFDF; }
 .boxed-manager .boxed-manager-menu .boxed-manager-menu-nav {
@@ -2155,6 +2155,8 @@
     width: 50%; }
   .boxed-manager .boxed-manager-main.boxed-manager-main-xlg {
     width: 80%; }
+	.boxed-manager .boxed-manager-main.boxed-manager-main-xlgg {
+    width: 100%; }
   .boxed-manager .boxed-manager-main .boxed-manager-main-header {
     padding: 15px 10px;
     height: 47px;
